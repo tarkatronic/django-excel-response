@@ -7,6 +7,7 @@ setup(
     name='django-excel-response',
     version=version,
     author='Tarken',
+    author_email='?',
     maintainer = 'Mikhail Korobov',
     maintainer_email='kmike84@gmail.com',
 
@@ -23,7 +24,7 @@ http://djangosnippets.org/snippets/1151/
 
     long_description = open('README.rst').read(),
 
-    required = ['xlwt'],
+    requires = ['xlwt'],
 
     classifiers=[
         'Development Status :: 5 - Production/Stable',
