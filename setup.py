@@ -8,8 +8,8 @@ setup(
     version=version,
     author='Tarken',
     author_email='?',
-    maintainer = 'Mikhail Korobov',
-    maintainer_email='kmike84@gmail.com',
+#    maintainer = 'Mikhail Korobov',
+#    maintainer_email='kmike84@gmail.com',
 
     packages=['excel_response'],
 
