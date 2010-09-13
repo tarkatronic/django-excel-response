@@ -3,6 +3,7 @@ django-excel-response
 =====================
 
 This is http://djangosnippets.org/snippets/1151/ uploaded to pypi.
+Author is Tarken.
 
 A subclass of HttpResponse which will transform a QuerySet,
 or sequence of sequences, into either an Excel spreadsheet or
