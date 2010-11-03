@@ -16,7 +16,7 @@ Installation
 
 ::
 
-    pip install excel_response xlwt
+    pip install django-excel-response xlwt
 
 
 Usage
