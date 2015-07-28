@@ -6,14 +6,14 @@ version='1.0'
 setup(
     name='django-excel-response',
     version=version,
-    author='Tarken',
-    author_email='?',
+    author='Joey Wilhelm',
+    author_email='tarkatronic@gmail.com',
 #    maintainer = 'Mikhail Korobov',
 #    maintainer_email='kmike84@gmail.com',
 
     packages=['excel_response'],
 
-    url='http://bitbucket.org/kmike/django-excel-response/',
+    url='http://bitbucket.org/tarkatronic/django-excel-response/',
     download_url = 'http://bitbucket.org/kmike/django-excel-response/get/tip.zip',
     description = """A subclass of HttpResponse which will transform a QuerySet,
 or sequence of sequences, into either an Excel spreadsheet or
