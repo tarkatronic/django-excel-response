@@ -46,5 +46,6 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Office/Business :: Financial :: Spreadsheet',
     ],
-    zip_safe=False
+    zip_safe=False,
+    test_suite='runtests.runtests'
 )
