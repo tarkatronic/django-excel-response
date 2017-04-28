@@ -2,6 +2,8 @@ from __future__ import absolute_import, unicode_literals
 
 from collections import OrderedDict
 
+import openpyxl
+import six
 from django.test import TestCase
 
 from excel_response import response
@@ -14,7 +16,7 @@ class ExcelResponseCSVTest(TestCase):
     def test_force_csv(self):
         r = response.ExcelResponse([['a']], force_csv=True)
         # Call this so that all of the data gets resolved
-        r.streaming_content
+        r.content
         self.assertEqual(r['content-type'], 'text/csv; charset=utf8')
 
     def test_exceeding_row_limit_with_list_creates_csv(self):
@@ -24,7 +26,7 @@ class ExcelResponseCSVTest(TestCase):
             [['a'], ['b'], ['c']]
         )
         # Call this so that all of the data gets resolved
-        r.streaming_content
+        r.content
         self.assertEqual(r['content-type'], 'text/csv; charset=utf8')
         response.ROW_LIMIT = old_limit
 
@@ -35,7 +37,7 @@ class ExcelResponseCSVTest(TestCase):
             [['a', 'b', 'c']]
         )
         # Call this so that all of the data gets resolved
-        r.streaming_content
+        r.content
         self.assertEqual(r['content-type'], 'text/csv; charset=utf8')
         response.COL_LIMIT = old_limit
 
@@ -49,7 +51,7 @@ class ExcelResponseCSVTest(TestCase):
             TestModel.objects.all()
         )
         # Call this so that all of the data gets resolved
-        r.streaming_content
+        r.content
         self.assertEqual(r['content-type'], 'text/csv; charset=utf8')
         response.ROW_LIMIT = old_limit
 
@@ -61,7 +63,7 @@ class ExcelResponseCSVTest(TestCase):
             TestModel.objects.all()
         )
         # Call this so that all of the data gets resolved
-        r.streaming_content
+        r.content
         self.assertEqual(r['content-type'], 'text/csv; charset=utf8')
         response.COL_LIMIT = old_limit
 
@@ -94,13 +96,32 @@ class ExcelResponseCSVTest(TestCase):
 class ExcelResponseExcelTest(TestCase):
 
     def test_create_excel_from_list(self):
-        pass
+        r = response.ExcelResponse(
+            [['a', 'b', 'c'], [1, 2, 3], [4, 5, 6]]
+        )
+        output = six.BytesIO(r.getvalue())
+        # This should theoretically raise errors if it's not a valid spreadsheet
+        openpyxl.load_workbook(output)
 
     def test_create_excel_from_list_of_dicts(self):
-        pass
+        r = response.ExcelResponse(
+            [
+                OrderedDict([('a', 1), ('b', 2), ('c', 3)]),  # OrderedDict ensures the order of our headers & output
+                {'a': 4, 'b': 5, 'c': 6}
+            ]
+        )
+        output = six.BytesIO(r.getvalue())
+        openpyxl.load_workbook(output)
 
     def test_create_excel_from_queryset(self):
-        pass
+        TestModel.objects.create(text='a', number='1')
+        TestModel.objects.create(text='b', number='2')
+        TestModel.objects.create(text='c', number='3')
+        r = response.ExcelResponse(
+            TestModel.objects.all()
+        )
+        output = six.BytesIO(r.getvalue())
+        openpyxl.load_workbook(output)
 
     def test_header_font_is_applied(self):
         pass

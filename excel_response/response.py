@@ -4,7 +4,7 @@ import csv
 
 import django
 import six
-from django.http.response import FileResponse
+from django.http.response import HttpResponse
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
 
@@ -18,7 +18,7 @@ ROW_LIMIT = 1048576
 COL_LIMIT = 16384
 
 
-class ExcelResponse(FileResponse):
+class ExcelResponse(HttpResponse):
     """
     This class provides an HTTP Response in the form of an Excel spreadsheet, or CSV file.
     """
@@ -34,7 +34,7 @@ class ExcelResponse(FileResponse):
         self.force_csv = force_csv
 
     @property
-    def streaming_content(self):
+    def content(self):
         workbook = None
         if isinstance(self._raw_data, list):
             workbook = self._serialize_list(self._raw_data)
@@ -50,14 +50,16 @@ class ExcelResponse(FileResponse):
             self['Content-Type'] = 'text/csv; charset=utf8'
             self['Content-Disposition'] = 'attachment;filename={}.csv'.format(self.output_name)
             workbook.seek(0)
+            workbook = self.make_bytes(workbook.getvalue())
         else:
             self['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             self['Content-Disposition'] = 'attachment; filename={}.xlsx'.format(self.output_name)
             workbook = save_virtual_workbook(workbook)
-        return map(self.make_bytes, workbook)
+        self._container = [self.make_bytes(workbook)]
+        return b''.join(self._container)
 
-    @streaming_content.setter
-    def streaming_content(self, value):
+    @content.setter
+    def content(self, value):
         self._raw_data = value
 
     def _serialize_list(self, data):
