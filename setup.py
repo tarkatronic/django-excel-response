@@ -1,6 +1,6 @@
 import os
-from setuptools import find_packages, setup
 
+from setuptools import find_packages, setup
 
 VERSION = open('VERSION', 'r').read().strip()
 
