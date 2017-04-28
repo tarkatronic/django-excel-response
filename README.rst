@@ -1,9 +1,8 @@
 =====================
 django-excel-response
 =====================
-
-This is http://djangosnippets.org/snippets/1151/ uploaded to pypi.
-Author is Tarken.
+.. image:: https://travis-ci.org/tarkatronic/django-excel-response.svg?branch=master
+   :target: https://travis-ci.org/tarkatronic/django-excel-response
 
 A subclass of HttpResponse which will transform a QuerySet,
 or sequence of sequences, into either an Excel spreadsheet or
@@ -16,7 +15,7 @@ Installation
 
 ::
 
-    pip install django-excel-response xlwt
+    pip install django-excel-response
 
 
 Usage
