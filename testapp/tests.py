@@ -150,4 +150,11 @@ class ExcelResponseExcelTest(TestCase):
 
 
 class CBVTest(TestCase):
-    pass
+
+    def test_excel_view(self):
+        TestModel.objects.create(text='a', number='1')
+        TestModel.objects.create(text='b', number='2')
+        TestModel.objects.create(text='c', number='3')
+        response = self.client.get('/test/')
+        output = six.BytesIO(response.content)
+        openpyxl.load_workbook(output, read_only=True)
