@@ -7,3 +7,5 @@ DATABASES = {
 }
 
 INSTALLED_APPS = ['testapp']
+
+ROOT_URLCONF = 'testapp.urls'
