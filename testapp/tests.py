@@ -5,6 +5,7 @@ from collections import OrderedDict
 import openpyxl
 import six
 from django.test import TestCase
+from openpyxl.styles import Font
 
 from excel_response import response
 
@@ -101,7 +102,7 @@ class ExcelResponseExcelTest(TestCase):
         )
         output = six.BytesIO(r.getvalue())
         # This should theoretically raise errors if it's not a valid spreadsheet
-        openpyxl.load_workbook(output)
+        openpyxl.load_workbook(output, read_only=True)
 
     def test_create_excel_from_list_of_dicts(self):
         r = response.ExcelResponse(
@@ -111,7 +112,7 @@ class ExcelResponseExcelTest(TestCase):
             ]
         )
         output = six.BytesIO(r.getvalue())
-        openpyxl.load_workbook(output)
+        openpyxl.load_workbook(output, read_only=True)
 
     def test_create_excel_from_queryset(self):
         TestModel.objects.create(text='a', number='1')
@@ -121,13 +122,31 @@ class ExcelResponseExcelTest(TestCase):
             TestModel.objects.all()
         )
         output = six.BytesIO(r.getvalue())
-        openpyxl.load_workbook(output)
+        openpyxl.load_workbook(output, read_only=True)
 
     def test_header_font_is_applied(self):
-        pass
+        f = Font(name='Windings')
+        r = response.ExcelResponse(
+            [['a', 'b', 'c'], [1, 2, 3], [4, 5, 6]],
+            header_font=f
+        )
+        output = six.BytesIO(r.getvalue())
+        book = openpyxl.load_workbook(output, read_only=True)
+        sheet = book.active
+        cell = sheet['A1']
+        self.assertEqual(cell.font.name, 'Windings')
 
     def test_data_font_is_applied(self):
-        pass
+        f = Font(name='Windings')
+        r = response.ExcelResponse(
+            [['a', 'b', 'c'], [1, 2, 3], [4, 5, 6]],
+            data_font=f
+        )
+        output = six.BytesIO(r.getvalue())
+        book = openpyxl.load_workbook(output, read_only=True)
+        sheet = book.active
+        cell = sheet['A2']
+        self.assertEqual(cell.font.name, 'Windings')
 
 
 class CBVTest(TestCase):
