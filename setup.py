@@ -1,6 +1,6 @@
 import os
 
-from setuptools import find_packages, setup
+from setuptools import setup
 
 with open('VERSION', 'r') as vfile:
     VERSION = vfile.read().strip()
@@ -16,7 +16,7 @@ setup(
     license='Apache',
     description='Django package to easily render Excel spreadsheets',
     long_description=open('README.rst', 'r').read().strip(),
-    packages=find_packages('excel_response'),
+    packages=['excel_response'],
     include_package_data=True,
     url='https://github.com/tarkatronic/django-excel-response',
     download_url='https://github.com/tarkatronic/django-excel-response/archive/master.tar.gz',
