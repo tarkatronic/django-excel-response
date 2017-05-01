@@ -21,3 +21,6 @@ matrix:
   include:
   - python: 3.6
     env: TOXENV=flake8
+branches:
+  only:
+    - master
