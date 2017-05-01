@@ -7,6 +7,7 @@ import six
 from django.http.response import HttpResponse
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
+from openpyxl.writer.write_only import WriteOnlyCell
 
 if django.VERSION >= (1, 9):
     from django.db.models.query import QuerySet
@@ -23,12 +24,13 @@ class ExcelResponse(HttpResponse):
     This class provides an HTTP Response in the form of an Excel spreadsheet, or CSV file.
     """
 
-    def __init__(self, data, output_name='excel_data', force_csv=False, header_font=None, data_font=None, *args,
-                 **kwargs):
+    def __init__(self, data, output_filename='excel_data', worksheet_name=None, force_csv=False, header_font=None,
+                 data_font=None, *args, **kwargs):
         # We do not initialize this with streaming_content, as that gets generated when needed
         super(ExcelResponse, self).__init__(*args, **kwargs)
         self._raw_data = data
-        self.output_name = output_name
+        self.output_filename = output_filename
+        self.worksheet_name = worksheet_name or 'Sheet 1'
         self.header_font = header_font
         self.data_font = data_font
         self.force_csv = force_csv
@@ -48,12 +50,12 @@ class ExcelResponse(HttpResponse):
 
         if self.force_csv:
             self['Content-Type'] = 'text/csv; charset=utf8'
-            self['Content-Disposition'] = 'attachment;filename={}.csv'.format(self.output_name)
+            self['Content-Disposition'] = 'attachment;filename={}.csv'.format(self.output_filename)
             workbook.seek(0)
             workbook = self.make_bytes(workbook.getvalue())
         else:
             self['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            self['Content-Disposition'] = 'attachment; filename={}.xlsx'.format(self.output_name)
+            self['Content-Disposition'] = 'attachment; filename={}.xlsx'.format(self.output_filename)
             workbook = save_virtual_workbook(workbook)
         self._container = [self.make_bytes(workbook)]
         return b''.join(self._container)
@@ -73,17 +75,29 @@ class ExcelResponse(HttpResponse):
             workbook = six.StringIO()
             csvwriter = csv.writer(workbook, dialect='excel')
             append = getattr(csvwriter, 'writerow')
+            write_header = append
         else:
-            workbook = Workbook()
-            worksheet = workbook.active
-            append = getattr(worksheet, 'append')
+            workbook = Workbook(write_only=True)
+            workbook.guess_types = True
+            worksheet = workbook.create_sheet(title=self.worksheet_name)
+
+            # Define custom functions for appending so that we can handle any formatting
+            def append(data):
+                return self._append_excel_row(worksheet, data, header=False)
+
+            def write_header(data):
+                return self._append_excel_row(worksheet, data, header=True)
+
         if isinstance(data[0], dict):
             append(headers)
-        for row in data:
+        for index, row in enumerate(data):
             if isinstance(row, dict):
-                append([row.get(col, None) for col in headers])
+                write_header([row.get(col, None) for col in headers])
             else:
-                append(row)
+                if index > 0:
+                    append(row)
+                else:
+                    write_header(row)
         return workbook
 
     def _serialize_queryset(self, data):
@@ -91,3 +105,20 @@ class ExcelResponse(HttpResponse):
 
     def _serialize_values_queryset(self, data):
         return self._serialize_list(list(data))
+
+    def _append_excel_row(self, worksheet, data, header=False):
+        if header:
+            font = self.header_font
+        else:
+            font = self.data_font
+
+        if not font:
+            row = data
+        else:
+            row = []
+            for cell in data:
+                cell = WriteOnlyCell(worksheet, cell)
+                cell.font = font
+                row.append(cell)
+
+        worksheet.append(row)
