@@ -11,5 +11,13 @@ env:
   - DJANGO="1.9"
   - DJANGO="1.10"
   - DJANGO="1.11"
-install: pip install tox-travis
+
+install: pip install tox-travis codecov
 script: tox
+after_success: coverage combine && codecov
+
+matrix:
+  fast_finish: true
+  include:
+  - python: 3.6
+    env: TOXENV=flake8
