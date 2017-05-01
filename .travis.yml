@@ -1,5 +1,6 @@
 sudo: false
 language: python
+cache: pip
 python:
 - '2.7'
 - '3.3'
@@ -27,7 +28,10 @@ deploy:
   provider: pypi
   user: jwilhelm
   password:
-    secure: R8/42JV5EkoHtVskFyZ5I+8ODZZL1ARYnlne43NbY57SgHmAB4wBeRy7kyu/20U74q0RQ6VaM6lYEZo983WKAyZZt4sUTgdylY0Y3stC3JRANJeLFTKkEKED6oeA2TtZMn697gOBEpCmsp2qOJdjtJxTDRuqP4X2thBlxAiHnK9xUhwguDR9EoHjB2PlCQ7sLLhxrSJclwkibj/IEEhT5N3ZcUTYjaCk0Q8SHVSBZrNgKieTJaOKHdz9RUzfEB/PZxYqUQkQJuE9v1YLEX5MPafQXnf6h4e2uKvJLj2R6H8Q2bJ2TfEuQhmU9kTfBhYZjewoC5+XIpjsda/6+yMBjZ1bUYlHGykwB24mKNSY9BjaC3GMZVOwYxUshEiuMFc7NHOPZXceQKG//IsyDk86E5eFv4CDf3cRlg1A4DyrHoDAT4R7pxb4XAG+nBK42cTZMbgFV1ggPFEzEJfsAKdTXD1h6Kp1zKaMs15r0M/QQAXk3isZKUzVnBxsdrUNscjwJzbhrk9ZOj05j+jX49ILzQrhzoDceSpf4mIjwdIzwf1yTkf8WmKh67/pcU7w+/ePto52K0mkdh6q/SlCienSoqyg2PWl48mGhtoztiZJw+tsW6Q0ojWmSH+R5MmireGASOZt//pnbwroPMApdAkxMM0/wWeTCBZTZzzc69u3fr0=
+    secure: WmUOadBn+apJbmMsUQgGnF3SLjMjO540FGsyyPoSkcVEIPHQdPAYpAIVe8GpGdPz4Orp7tCqIddCoL4pbu3ne8oly32aDVmnn/FIVRc1qacDNN+bbwewEtl36g4uWDA395fTH2RHoI5aekQNp23/Lz/pP6zMW4mz6AFsN4p4JtGokrwqeJ4R1AyzyW4b8QPX7gT8KMf/cYkbxwhHIdMbG9nnldXJFFcrvB9MearUjquXf2Kag9vVJ8hZGYlFjx2woHPfLD8beMspSnnMlheWDaRrC68kQ4pHtuMCtku/h2reAx64VoMivjoptCb3nSNloLCQ87Ymoj+IvICWksUTcAZCttQX40Om5ugC3HTp/rAGXmjR1JxsWU+1DqIuQXPi5F9vTvCif/QCn4phVFGmjvs8wT+GuIJ+TSJPdPrFjF2YIWjJNZnkqSe1e4o4L/WkjLPsS5+FCCq4AprZ0yFgUUpy3iCp60Bg7/LIT+Co/yBWllZInWZyJ2Y4WcOypRyfXlnds8Tdwryylqp3kWixA/0HvPjXJb/R8m4SJGPztUpmH/4l4GJ9O72sXuQbp1lP09Attq1g5gKzblIel6je199ydHOE5hlnaexwC6ZHBFmMVT/Abxzh1I4p2+Ah1pdxqa0SpLqpLVsc2PRWbZ7J8FIhBn7d9+n0ZhXBOmlXe9Y=
   on:
     tags: true
-    branch: master
+    python: 3.6
+    condition: $TOXENV = flake8
+    distributions: sdist bdist_wheel
+    repo: tarkatronic/django-excel-response
