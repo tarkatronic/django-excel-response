@@ -31,6 +31,7 @@ Provided Classes
 * ``excel_response.response.ExcelResponse``
 
     Accepted arguments:
+
     * ``data`` - A queryset or list of lists from which to construct the output
     * ``output_filename`` - The filename which should be suggested in the http response,
       minus the file extension (**default: excel_data**)
