@@ -1,4 +1,5 @@
 include *.txt
 include *.rst
+include CHANGELOG
 include LICENSE
 include VERSION
