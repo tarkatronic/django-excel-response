@@ -1,0 +1,6 @@
+Version 2.0.0 - Mon May 01, 2017
+- Full rewrite from the ground up using openpyxl
+
+Version 2.0.1 - Sun May 14, 2017
+- Bugfix for streaming content
+- Bugfix for .values() queries with Django >= 1.9
