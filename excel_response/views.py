@@ -67,4 +67,4 @@ class ExcelView(ExcelMixin, View):
     Return the results of a queryset as an Excel spreadsheet.
     """
     def get(self, request, *args, **kwargs):
-        return self.render_to_response(self.get_queryset())
+        return self.render_to_response({})
