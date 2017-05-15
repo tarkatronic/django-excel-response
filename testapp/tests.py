@@ -93,6 +93,20 @@ class ExcelResponseCSVTest(TestCase):
             b'a,b,c\r\n1,2,3\r\n4,5,6\r\n'
         )
 
+    def test_queryset_values_limits_output_columns(self):
+        TestModel.objects.create(text='a', number='1')
+        TestModel.objects.create(text='b', number='2')
+        TestModel.objects.create(text='c', number='3')
+        r = response.ExcelResponse(
+            TestModel.objects.all().values('text'),
+            force_csv=True
+        )
+        output = r.getvalue()
+        self.assertEqual(
+            output,
+            b'text\r\na\r\nb\r\nc\r\n'
+        )
+
 
 class ExcelResponseExcelTest(TestCase):
 

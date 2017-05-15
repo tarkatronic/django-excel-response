@@ -99,7 +99,10 @@ class ExcelResponse(HttpResponse):
         return workbook
 
     def _serialize_queryset(self, data):
-        return self._serialize_list(list(data.values()))
+        if isinstance(data[0], dict):  # .values() returns a list of dicts
+            return self._serialize_list(list(data))
+        else:
+            return self._serialize_list(list(data.values()))
 
     def _serialize_values_queryset(self, data):
         return self._serialize_list(list(data))
