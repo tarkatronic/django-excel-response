@@ -27,24 +27,27 @@ class ExcelResponse(HttpResponse):
     def __init__(self, data, output_filename='excel_data', worksheet_name=None, force_csv=False, header_font=None,
                  data_font=None, *args, **kwargs):
         # We do not initialize this with streaming_content, as that gets generated when needed
-        super(ExcelResponse, self).__init__(*args, **kwargs)
-        self._raw_data = data
         self.output_filename = output_filename
         self.worksheet_name = worksheet_name or 'Sheet 1'
         self.header_font = header_font
         self.data_font = data_font
         self.force_csv = force_csv
+        super(ExcelResponse, self).__init__(data, *args, **kwargs)
 
     @property
     def content(self):
+        return b''.join(self._container)
+
+    @content.setter
+    def content(self, value):
         workbook = None
-        if isinstance(self._raw_data, list):
-            workbook = self._serialize_list(self._raw_data)
-        elif isinstance(self._raw_data, QuerySet):
-            workbook = self._serialize_queryset(self._raw_data)
+        if isinstance(value, list):
+            workbook = self._serialize_list(value)
+        elif isinstance(value, QuerySet):
+            workbook = self._serialize_queryset(value)
         if django.VERSION < (1, 9):
-            if isinstance(self._raw_data, ValuesQuerySet):
-                workbook = self._serialize_values_queryset(self._raw_data)
+            if isinstance(value, ValuesQuerySet):
+                workbook = self._serialize_values_queryset(value)
         if workbook is None:
             raise ValueError('ExcelResponse accepts the following data types: list, dict, QuerySet, ValuesQuerySet')
 
@@ -58,11 +61,6 @@ class ExcelResponse(HttpResponse):
             self['Content-Disposition'] = 'attachment; filename={}.xlsx'.format(self.output_filename)
             workbook = save_virtual_workbook(workbook)
         self._container = [self.make_bytes(workbook)]
-        return b''.join(self._container)
-
-    @content.setter
-    def content(self, value):
-        self._raw_data = value
 
     def _serialize_list(self, data):
         workbook = None
