@@ -116,7 +116,10 @@ class ExcelResponseExcelTest(TestCase):
         )
         output = six.BytesIO(r.getvalue())
         # This should theoretically raise errors if it's not a valid spreadsheet
-        openpyxl.load_workbook(output, read_only=True)
+        wb = openpyxl.load_workbook(output, read_only=True)
+        ws = wb.active
+        self.assertEqual((ws['A1'].value, ws['B1'].value, ws['C1'].value), ('a', 'b', 'c'))
+        self.assertEqual((ws['A2'].value, ws['B2'].value, ws['C2'].value), (1, 2, 3))
 
     def test_create_excel_from_list_of_dicts(self):
         r = response.ExcelResponse(

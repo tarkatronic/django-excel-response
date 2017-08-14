@@ -9,6 +9,7 @@ from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
 from openpyxl.writer.write_only import WriteOnlyCell
 
+
 if django.VERSION >= (1, 9):
     from django.db.models.query import QuerySet
 else:
