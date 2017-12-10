@@ -107,6 +107,16 @@ class ExcelResponseCSVTest(TestCase):
             b'text\r\na\r\nb\r\nc\r\n'
         )
 
+    def test_csv_output_with_empty_list(self):
+        r = response.ExcelResponse([], force_csv=True)
+        output = r.getvalue()
+        self.assertEqual(output, b'')
+
+    def test_csv_output_with_empty_queryset(self):
+        r = response.ExcelResponse(TestModel.objects.none(), force_csv=True)
+        output = r.getvalue()
+        self.assertEqual(output, b'')
+
 
 class ExcelResponseExcelTest(TestCase):
 

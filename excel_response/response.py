@@ -42,7 +42,10 @@ class ExcelResponse(HttpResponse):
     @content.setter
     def content(self, value):
         workbook = None
-        if isinstance(value, list):
+        if not bool(value) or not len(value):  # Short-circuit to protect against empty querysets/empty lists/None, etc
+            self._container = []
+            return
+        elif isinstance(value, list):
             workbook = self._serialize_list(value)
         elif isinstance(value, QuerySet):
             workbook = self._serialize_queryset(value)
@@ -65,7 +68,7 @@ class ExcelResponse(HttpResponse):
 
     def _serialize_list(self, data):
         workbook = None
-        if isinstance(data[0], dict):  # If we're dealing with a list of dicationaries, generate the headers
+        if isinstance(data[0], dict):  # If we're dealing with a list of dictionaries, generate the headers
             headers = [key for key in data[0]]
         else:
             headers = data[0]
