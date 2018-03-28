@@ -177,7 +177,7 @@ class ExcelResponseExcelTest(TestCase):
 
     def test_create_excel_with_guess_types_on(self):
         r = response.ExcelResponse(
-            [['a', 'b', 'c'], [2018032710050111540290000000000720000000023, 2, 3], [4, 5, 6]]
+            [['a', 'b', 'c'], ['2018032710050111540290000000000720000000023', 2, 3], [4, 5, 6]]
         )
         output = six.BytesIO(r.getvalue())
         # This should theoretically raise errors if it's not a valid spreadsheet
