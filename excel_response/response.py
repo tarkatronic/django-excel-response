@@ -26,13 +26,14 @@ class ExcelResponse(HttpResponse):
     """
 
     def __init__(self, data, output_filename='excel_data', worksheet_name=None, force_csv=False, header_font=None,
-                 data_font=None, *args, **kwargs):
+                 data_font=None, guess_types=True, *args, **kwargs):
         # We do not initialize this with streaming_content, as that gets generated when needed
         self.output_filename = output_filename
         self.worksheet_name = worksheet_name or 'Sheet 1'
         self.header_font = header_font
         self.data_font = data_font
         self.force_csv = force_csv
+        self.guess_types = guess_types
         super(ExcelResponse, self).__init__(data, *args, **kwargs)
 
     @property
@@ -80,7 +81,7 @@ class ExcelResponse(HttpResponse):
             write_header = append
         else:
             workbook = Workbook(write_only=True)
-            workbook.guess_types = True
+            workbook.guess_types = self.guess_types
             worksheet = workbook.create_sheet(title=self.worksheet_name)
 
             # Define custom functions for appending so that we can handle any formatting

@@ -175,6 +175,29 @@ class ExcelResponseExcelTest(TestCase):
         cell = sheet['A2']
         self.assertEqual(cell.font.name, 'Windings')
 
+    def test_create_excel_with_guess_types_on(self):
+        r = response.ExcelResponse(
+            [['a', 'b', 'c'], ['2018032710050111540290000000000720000000023', 2, 3], [4, 5, 6]]
+        )
+        output = six.BytesIO(r.getvalue())
+        # This should theoretically raise errors if it's not a valid spreadsheet
+        wb = openpyxl.load_workbook(output, read_only=True)
+        ws = wb.active
+        self.assertEqual((ws['A1'].value, ws['B1'].value, ws['C1'].value), ('a', 'b', 'c'))
+        self.assertEqual((ws['A2'].value, ws['B2'].value, ws['C2'].value), (2.018032710050112e+42, 2, 3))
+
+    def test_create_excel_with_guess_types_off(self):
+        r = response.ExcelResponse(
+            [['a', 'b', 'c'], ['2018032710050111540290000000000720000000023', 2, 3], [4, 5, 6]], guess_types=False
+        )
+        output = six.BytesIO(r.getvalue())
+        # This should theoretically raise errors if it's not a valid spreadsheet
+        wb = openpyxl.load_workbook(output, read_only=True)
+        ws = wb.active
+        self.assertEqual((ws['A1'].value, ws['B1'].value, ws['C1'].value), ('a', 'b', 'c'))
+        self.assertEqual((ws['A2'].value, ws['B2'].value, ws['C2'].value),
+                         ('2018032710050111540290000000000720000000023', 2, 3))
+
 
 class CBVTest(TestCase):
 
