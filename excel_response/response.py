@@ -28,7 +28,7 @@ class ExcelResponse(HttpResponse):
     def __init__(self, data, output_filename='excel_data', worksheet_name=None, force_csv=False, header_font=None,
                  data_font=None, guess_types=True, *args, **kwargs):
         # We do not initialize this with streaming_content, as that gets generated when needed
-        self.output_filename = output_filename
+        self.output_filename = output_filename.replace(',', '') if output_filename else ''
         self.worksheet_name = worksheet_name or 'Sheet 1'
         self.header_font = header_font
         self.data_font = data_font
