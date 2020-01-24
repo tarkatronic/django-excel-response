@@ -14,9 +14,12 @@ django-excel-response
    :alt: Code coverage
 
 
-A subclass of HttpResponse which will transform a QuerySet,
-or sequence of sequences, into either an Excel spreadsheet or
-CSV file formatted for Excel, depending on the amount of data.
+A subclass of HttpResponse which will transform:
+  - a QuerySet, or sequence of sequences, into either an Excel spreadsheet or
+    CSV file formatted for Excel, depending on the amount of data;
+  - a dictionary, where keys are names of spreadsheets and values are  sequences of sequences
+    or QuerySets, into either an Excel file with multiply spreadsheets or CSV file formatted
+    for Excel, depending on the amount of data;
 
 Installation
 ============
@@ -32,11 +35,14 @@ Provided Classes
 
     Accepted arguments:
 
-    * ``data`` - A queryset or list of lists from which to construct the output
+    * ``data``:
+               - A queryset or list of lists from which to construct the output
+               - A dictionary where keys are names of spreadsheets and values are querysets or lists of lists
+                 from which to construct the spreadsheet
     * ``output_filename`` - The filename which should be suggested in the http response,
       minus the file extension (**default: excel_data**)
     * ``worksheet_name`` - The name of the worksheet inside the spreadsheet into which
-      the data will be inserted (**default: None**)
+      the data will be inserted (**default: None**) (ignored in case **data** is dictionary)
     * ``force_csv`` - A boolean stating whether to force CSV output (**default: False**)
     * ``header_font`` - The font to be applied to the header row of the spreadsheet;
       must be an instance of ``openpyxl.styles.Font`` (**default: None**)
@@ -78,6 +84,46 @@ Or you can construct your data manually.
             [23,67]
         ]
         return ExcelResponse(data, 'my_data')
+
+
+In case you need multi spreadsheet file you need to construct dictionary:
+
+.. code-block:: python
+
+    from excel_response import ExcelResponse
+
+
+    SOME_FIELD_NAME_LIST = [...]
+
+
+    def excelview(request):
+        result_dict = {}
+        for some_field_name in SOME_FIELD_NAME_LIST:
+            result_dict[some_field_name] = SomeModel.objects.filter(some_field=some_field_name)
+        return ExcelResponse(result_dict)
+
+
+Or you can construct your data manually.
+
+.. code-block:: python
+
+    from excel_response import ExcelResponse
+
+
+    def excelview(request):
+        data = {'Spreadsheet1 name': [
+                ['Column 1', 'Column 2'],
+                [1,2]
+                [23,67]
+            ],
+            [
+                ['Column 1', 'Column 2'],
+                [3,4]
+                [89,33]
+            ]
+        }
+        return ExcelResponse(data, 'my_data')
+
 
 Class-based views
 -----------------
