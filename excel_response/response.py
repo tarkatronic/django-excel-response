@@ -28,7 +28,7 @@ class ExcelResponse(HttpResponse):
     def __init__(self, data, output_filename='excel_data', worksheet_name=None, force_csv=False, header_font=None,
                  data_font=None, guess_types=True, *args, **kwargs):
         # We do not initialize this with streaming_content, as that gets generated when needed
-        self.output_filename = output_filename.replace(',', '') if output_filename else ''
+        self.output_filename = output_filename
         self.worksheet_name = worksheet_name or 'Sheet 1'
         self.header_font = header_font
         self.data_font = data_font
@@ -58,17 +58,16 @@ class ExcelResponse(HttpResponse):
 
         if self.force_csv:
             self['Content-Type'] = 'text/csv; charset=utf8'
-            self['Content-Disposition'] = 'attachment;filename={}.csv'.format(self.output_filename)
+            self['Content-Disposition'] = 'attachment;filename="{}".csv'.format(self.output_filename)
             workbook.seek(0)
             workbook = self.make_bytes(workbook.getvalue())
         else:
             self['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            self['Content-Disposition'] = 'attachment; filename={}.xlsx'.format(self.output_filename)
+            self['Content-Disposition'] = 'attachment; filename="{}".xlsx'.format(self.output_filename)
             workbook = save_virtual_workbook(workbook)
         self._container = [self.make_bytes(workbook)]
 
     def _serialize_list(self, data):
-        workbook = None
         if isinstance(data[0], dict):  # If we're dealing with a list of dictionaries, generate the headers
             headers = [key for key in data[0]]
         else:
