@@ -11,7 +11,6 @@ try:
     from openpyxl.cell import WriteOnlyCell
 except ImportError:
     from openpyxl.writer.write_only import WriteOnlyCell
-
 if django.VERSION >= (1, 9):
     from django.db.models.query import QuerySet
 else:
