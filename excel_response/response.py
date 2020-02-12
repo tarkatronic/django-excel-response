@@ -7,6 +7,7 @@ import six
 from django.http.response import HttpResponse
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
+
 try:
     from openpyxl.cell import WriteOnlyCell
 except ImportError:
