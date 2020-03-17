@@ -1,3 +1,6 @@
+Version 2.0.4 - Fri Feb 07, 2020
+- #25 - Fix Chrome multiple-headers bug for filenames containing commas (@broxeph)
+
 Version 2.0.3 - Fri Jan 26, 2017
 - Bugfix for #18 - OpenPyXL breaking change (Thanks to @ojhilt and @bertramr)
 
