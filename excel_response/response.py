@@ -58,12 +58,12 @@ class ExcelResponse(HttpResponse):
 
         if self.force_csv:
             self['Content-Type'] = 'text/csv; charset=utf8'
-            self['Content-Disposition'] = 'attachment;filename="{}".csv'.format(self.output_filename)
+            self['Content-Disposition'] = 'attachment;filename="{}.csv"'.format(self.output_filename)
             workbook.seek(0)
             workbook = self.make_bytes(workbook.getvalue())
         else:
             self['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            self['Content-Disposition'] = 'attachment; filename="{}".xlsx'.format(self.output_filename)
+            self['Content-Disposition'] = 'attachment; filename="{}.xlsx"'.format(self.output_filename)
             workbook = save_virtual_workbook(workbook)
         self._container = [self.make_bytes(workbook)]
 
