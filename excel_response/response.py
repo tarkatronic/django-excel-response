@@ -7,8 +7,7 @@ import six
 from django.http.response import HttpResponse
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
-from openpyxl.writer.write_only import WriteOnlyCell
-
+from openpyxl.cell import WriteOnlyCell
 
 if django.VERSION >= (1, 9):
     from django.db.models.query import QuerySet
