@@ -24,8 +24,7 @@ setup(
     include_package_data=True,
     url='https://github.com/tarkatronic/django-excel-response',
     download_url='https://github.com/tarkatronic/django-excel-response/archive/master.tar.gz',
-    install_requires=[
-        'Django>=1.8',
+    install_requires=[        
         'openpyxl>=2.6.1'
     ],
 
